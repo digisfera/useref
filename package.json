@@ -1,0 +1,30 @@
+{
+  "name": "useref",
+  "version": "0.0.1",
+  "description": "Parse build blocks in HTML files to replace references",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "keywords": [
+    "build",
+    "blocks",
+    "build",
+    "comments",
+    "replace",
+    "scripts",
+    "link",
+    "ref"
+  ],
+  "author": "Manuel Cabral (m.cabral@digisfera.pt)",
+  "license": "ISC",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "chai": "~1.8.1",
+    "mocha": "~1.17.0"
+  }
+}
