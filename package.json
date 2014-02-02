@@ -1,6 +1,6 @@
 {
   "name": "useref",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Parse build blocks in HTML files to replace references",
   "main": "src/index.js",
   "directories": {
@@ -20,7 +20,7 @@
     "ref"
   ],
   "author": "Manuel Cabral (m.cabral@digisfera.pt)",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
   },
   "devDependencies": {
