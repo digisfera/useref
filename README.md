@@ -12,10 +12,22 @@ Extracted from the grunt plugin [grunt-useref](https://github.com/pajtai/grunt-u
 
     useref = require('useref')
     var result = useref(inputHtml)
-    // result = [ replacedHtml, { type: { id: [ replacedFiles] }} ]
+    // result = [ replacedHtml, { type: { path: { 'assets': [ replacedFiles] }}} ]
 
 
-The build block syntax is `build:type id`. Valid types are `js` and `css`
+Blocks are expressed as:
+
+```html
+<!-- build:<type>(alternate search path) <path> -->
+... HTML Markup, list of script / link tags.
+<!-- endbuild -->
+```
+
+- **type**: either `js` or `css`
+- **alternate search path**: (optional) By default the input files are relative to the treated file. Alternate search path allows one to change that
+- **path**: the file path of the optimized file, the target output
+
+An example of this in completed form can be seen below:
 
     <html>
     <head>
@@ -40,10 +52,14 @@ The module would be used with the above sample HTML as follows:
     //   resultHtml,
     //   {
     //     css: {
-    //       'css/combined.css': [ 'css/one.css', 'css/two.css' ]
+    //       'css/combined.css': {
+    //         'assets': [ 'css/one.css', 'css/two.css' ]
+    //       }
     //     },
     //     js: {
-    //       'scripts/combined.js': [ 'css/one.js', 'css/two.js' ]
+    //       'scripts/combined.js': {
+    //         'assets': [ 'css/one.js', 'css/two.js' ]
+    //       }
     //     }
     //   }
     // ]
