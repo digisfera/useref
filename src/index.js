@@ -55,11 +55,6 @@ function getBlocks(body) {
     if (build) {
       block = true;
       sections[[build[1], build[3].trim()].join(':')] = last = [];
-
-      if (build[2]) {
-        // Alternate search path
-        sections.searchPaths = build[2];
-      }
     }
 
     // switch back block flag when endbuild
@@ -109,14 +104,12 @@ function updateReferences(blocks, content) {
 
   // handle blocks
   Object.keys(blocks).forEach(function (key) {
-    if (key !== 'searchPaths') {
-      var block = blocks[key].join(linefeed),
-          parts = key.split(':'),
-          type = parts[0],
-          target = parts[1];
+    var block = blocks[key].join(linefeed),
+      parts = key.split(':'),
+      type = parts[0],
+      target = parts[1];
 
-      content = helpers.useref(content, block, target, type);
-    }
+    content = helpers.useref(content, block, target, type);
   });
 
   return content;
@@ -127,36 +120,36 @@ function compactContent(blocks) {
   var result = {};
 
   Object.keys(blocks).forEach(function (dest) {
-    if (dest !== 'searchPaths') {
-      // Lines are the included scripts w/o the use blocks
-      var lines = blocks[dest].slice(1, -1),
-          parts = dest.split(':'),
-          type = parts[0],
-          // output is the useref block file
-          output = parts[1];
+    // Lines are the included scripts w/o the use blocks
+    var lines = blocks[dest].slice(1, -1),
+      parts = dest.split(':'),
+      type = parts[0],
+      // output is the useref block file
+      output = parts[1],
+      build = String.prototype.match.apply( blocks[dest][0], [regbuild] );
 
-      // parse out the list of assets to handle, and update the grunt config accordingly
-      var assets = lines.map(function (tag) {
+    // parse out the list of assets to handle, and update the grunt config accordingly
+    var assets = lines.map(function (tag) {
 
-        // The asset is the string of the referenced source file
-        var asset = (tag.match(/(href|src)=["']([^'"]+)["']/) || [])[2];
+      // The asset is the string of the referenced source file
+      var asset = (tag.match(/(href|src)=["']([^'"]+)["']/) || [])[2];
 
-        // Allow white space and comment in build blocks by checking if this line has an asset or not
-        if (asset) {
-          return asset;
-        }
-
-      }).reduce(function (a, b) {
-            b = (b ? b.split(',') : '');
-            return b ? a.concat(b) : a;
-          }, []);
-
-
-      result[type] = result[type] || {};
-      result[type][output] = { 'assets': assets };
-      if (blocks.searchPaths) {
-        result[type][output].searchPaths = blocks.searchPaths;
+      // Allow white space and comment in build blocks by checking if this line has an asset or not
+      if (asset) {
+        return asset;
       }
+
+    }).reduce(function (a, b) {
+      b = (b ? b.split(',') : '');
+      return b ? a.concat(b) : a;
+    }, []);
+
+
+    result[type] = result[type] || {};
+    result[type][output] = { 'assets': assets };
+    if (build[2]) {
+      // Alternate search path
+      result[type][output].searchPaths = build[2];
     }
   });
 
