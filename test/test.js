@@ -59,4 +59,9 @@ describe('html-ref-replace', function() {
     var result = useRef(fread(djoin('testfiles/06.html')));
     expect(result[1].js['scripts/combined.concat.min.js'].searchPaths).to.equal('{.tmp,app}');
   });
+
+  it('should return the alternate search path in multiple blocks', function() {
+    var result = useRef(fread(djoin('testfiles/07.html')));
+    expect(result[1].js['scripts/combined2.min.js'].searchPaths).to.equal('.tmp');
+  });
 });
