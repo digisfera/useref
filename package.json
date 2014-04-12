@@ -1,6 +1,6 @@
 {
   "name": "useref",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Parse build blocks in HTML files to replace references",
   "main": "src/index.js",
   "directories": {
