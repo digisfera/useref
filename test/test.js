@@ -50,6 +50,11 @@ describe('html-ref-replace', function() {
     });
   });
 
+  it('should remove empty blocks', function() {
+    var result = useRef(fread(djoin('testfiles/08.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/08-expected.html')));
+  });
+
   it('should return the alternate search path in css block', function() {
     var result = useRef(fread(djoin('testfiles/05.html')));
     expect(result[1].css['/css/combined.css'].searchPaths).to.equal('.tmp');
