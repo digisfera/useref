@@ -44,13 +44,13 @@ module.exports = function (content) {
 //
 function getBlocks(body) {
   var lines = body.replace(/\r\n/g, '\n').split(/\n/),
-      block = false,
-      sections = {},
-      last;
+    block = false,
+    sections = {},
+    last;
 
   lines.forEach(function (l) {
     var build = l.match(regbuild),
-        endbuild = regend.test(l);
+      endbuild = regend.test(l);
 
     if (build) {
       block = true;
@@ -79,21 +79,22 @@ function getBlocks(body) {
 var helpers = {
   // useref and useref:* are used with the blocks parsed from directives
   useref: function (content, block, target, type) {
+    var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
+        lines = block.split(linefeed),
+        refs = lines.slice(1, -1),
+        ref = '',
+        indent = (lines[0].match(/^\s*/) || [])[0];
+
     target = target || 'replace';
 
-    return helpers['useref_' + type](content, block, target);
-  },
-
-  useref_css: function (content, block, target) {
-    var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n';
-    var indent = (block.split(linefeed)[0].match(/^\s*/) || [])[0];
-    return content.replace(block, indent + '<link rel="stylesheet" href="' + target + '"\/>');
-  },
-
-  useref_js: function (content, block, target) {
-    var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n';
-    var indent = (block.split(linefeed)[0].match(/^\s*/) || [])[0];
-    return content.replace(block, indent + '<script src="' + target + '"></script>');
+    if (refs.length) {
+      if (type === 'css') {
+        ref = '<link rel="stylesheet" href="' + target + '"\/>';
+      } else if (type === 'js') {
+        ref = '<script src="' + target + '"></script>';
+      }
+    }
+    return content.replace(block, indent + ref);
   }
 };
 
