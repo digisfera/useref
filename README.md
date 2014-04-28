@@ -6,13 +6,17 @@ Extracted from the grunt plugin [grunt-useref](https://github.com/pajtai/grunt-u
 
 ## Installation
 
-    npm install node-useref
+```
+npm install node-useref
+```
 
 ## Usage
 
-    useref = require('node-useref')
-    var result = useref(inputHtml)
-    // result = [ replacedHtml, { type: { path: { 'assets': [ replacedFiles] }}} ]
+```js
+useref = require('node-useref')
+var result = useref(inputHtml)
+// result = [ replacedHtml, { type: { path: { 'assets': [ replacedFiles] }}} ]
+```
 
 
 Blocks are expressed as:
@@ -29,49 +33,55 @@ Blocks are expressed as:
 
 An example of this in completed form can be seen below:
 
-    <html>
-    <head>
-      <!-- build:css css/combined.css -->
-      <link href="css/one.css" rel="stylesheet">
-      <link href="css/two.css" rel="stylesheet">
-      <!-- endbuild -->
-    </head>
-    <body>
-      <!-- build:js scripts/combined.js -->
-      <script type="text/javascript" src="scripts/one.js"></script>
-      <script type="text/javascript" src="scripts/two.js"></script>
-      <!-- endbuild -->
-    </body>
-    </html>
+```html
+<html>
+<head>
+  <!-- build:css css/combined.css -->
+  <link href="css/one.css" rel="stylesheet">
+  <link href="css/two.css" rel="stylesheet">
+  <!-- endbuild -->
+</head>
+<body>
+  <!-- build:js scripts/combined.js -->
+  <script type="text/javascript" src="scripts/one.js"></script>
+  <script type="text/javascript" src="scripts/two.js"></script>
+  <!-- endbuild -->
+</body>
+</html>
+```
 
 The module would be used with the above sample HTML as follows:
 
-    var result = useref(sampleHtml)
+```js
+var result = useref(sampleHtml)
 
-    // [
-    //   resultHtml,
-    //   {
-    //     css: {
-    //       'css/combined.css': {
-    //         'assets': [ 'css/one.css', 'css/two.css' ]
-    //       }
-    //     },
-    //     js: {
-    //       'scripts/combined.js': {
-    //         'assets': [ 'css/one.js', 'css/two.js' ]
-    //       }
-    //     }
-    //   }
-    // ]
+// [
+//   resultHtml,
+//   {
+//     css: {
+//       'css/combined.css': {
+//         'assets': [ 'css/one.css', 'css/two.css' ]
+//       }
+//     },
+//     js: {
+//       'scripts/combined.js': {
+//         'assets': [ 'css/one.js', 'css/two.js' ]
+//       }
+//     }
+//   }
+// ]
+```
 
 
 The resulting HTML would be:
 
-    <html>
-    <head>
-      <link rel="stylesheet" href="css/combined.css"/>
-    </head>
-    <body>
-      <script src="scripts/combined.js"></script>
-    </body>
-    </html>
+```html
+<html>
+<head>
+  <link rel="stylesheet" href="css/combined.css"/>
+</head>
+<body>
+  <script src="scripts/combined.js"></script>
+</body>
+</html>
+```
