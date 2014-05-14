@@ -3,7 +3,7 @@
 
 // start build pattern: <!-- build:[target] output -->
 // $1 is the type, $2 is the alternate search path, $3 is the destination file name
-var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)\s*-->/;
+var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*-->/;
 
 // end build pattern -- <!-- endbuild -->
 var regend = /<!--\s*endbuild\s*-->/;
@@ -46,7 +46,8 @@ function getBlocks(body) {
   var lines = body.replace(/\r\n/g, '\n').split(/\n/),
     block = false,
     sections = {},
-    last;
+    last,
+    removeBlockIndex = 0;
 
   lines.forEach(function (l) {
     var build = l.match(regbuild),
@@ -54,6 +55,8 @@ function getBlocks(body) {
 
     if (build) {
       block = true;
+
+      if(build[1] === 'remove') { build[3] = String(removeBlockIndex++); }
       sections[[build[1], build[3].trim()].join(':')] = last = [];
     }
 
@@ -92,6 +95,9 @@ var helpers = {
         ref = '<link rel="stylesheet" href="' + target + '"\/>';
       } else if (type === 'js') {
         ref = '<script src="' + target + '"></script>';
+      }
+      else if (type == 'remove') {
+        ref = '';
       }
     }
     return content.replace(block, indent + ref);

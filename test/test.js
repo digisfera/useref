@@ -29,6 +29,18 @@ describe('html-ref-replace', function() {
     expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
   });
 
+  it('should remove `remove` block', function() {
+    var result = useRef(fread(djoin('testfiles/09.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/09-expected.html')));
+    expect(result[1]).to.eql({ remove: { '0': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
+  });
+
+  it('should remove multiple `remove` blocks', function() {
+    var result = useRef(fread(djoin('testfiles/10.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/10-expected.html')));
+    expect(result[1]).to.eql({ remove: { '0': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }, '1': { 'assets': [ '/css/one.css', '/css/two.css' ] } }});
+  });
+
   it('should handle comments and whitespace in blocks', function() {
     var result = useRef(fread(djoin('testfiles/03.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/03-expected.html')));
