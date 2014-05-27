@@ -85,6 +85,5 @@ describe('html-ref-replace', function() {
   it('should replace jsasync blocks', function() {
     var result = useRef(fread(djoin('testfiles/11.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/11-expected.html')));
-    expect(result[1]).to.eql({ jsasync: { 'scripts/combined.async.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
   });
 });
