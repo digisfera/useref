@@ -67,6 +67,16 @@ function getBlocks(body) {
     }
 
     if (block && last) {
+      var asset = l.match(/(href|src)=["']([^'"]+)["']/);
+      if (asset && asset[2]) {
+        // preserve async attribute
+        var async = / async/.test(l);
+        if (async && last.async === false || last.async && !async) {
+          throw new Error('You are not suppose to mix asynced and non-asynced scripts in one block.');
+        } else {
+          last.async = async;
+        }
+      }
       last.push(l);
     }
   });
@@ -81,7 +91,7 @@ function getBlocks(body) {
 // -------
 var helpers = {
   // useref and useref:* are used with the blocks parsed from directives
-  useref: function (content, block, target, type) {
+  useref: function (content, block, target, type, async) {
     var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
         lines = block.split(linefeed),
         refs = lines.slice(1, -1),
@@ -93,14 +103,12 @@ var helpers = {
     if (refs.length) {
       if (type === 'css') {
         ref = '<link rel="stylesheet" href="' + target + '"\/>';
+      } else if (async) {
+        ref = '<script async src="' + target + '"></script>';
       } else if (type === 'js') {
         ref = '<script src="' + target + '"></script>';
-      }
-      else if (type == 'remove') {
+      } else if (type === 'remove') {
         ref = '';
-      }
-      else if (type == 'jsasync') {
-        ref = '<script src="' + target + '" async ></script>'
       }
     }
     return content.replace(block, indent + ref);
@@ -117,9 +125,10 @@ function updateReferences(blocks, content) {
     var block = blocks[key].join(linefeed),
       parts = key.split(':'),
       type = parts[0],
-      target = parts[1];
+      target = parts[1],
+      async = blocks[key].async;
 
-    content = helpers.useref(content, block, target, type);
+    content = helpers.useref(content, block, target, type, async);
   });
 
   return content;
