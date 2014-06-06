@@ -62,9 +62,10 @@ describe('html-ref-replace', function() {
     });
   });
 
-  it('should remove empty blocks', function() {
+  it('should replace reference in empty blocks', function() {
     var result = useRef(fread(djoin('testfiles/08.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/08-expected.html')));
+    expect(result[1]).to.eql({ css: { '/css/vendor.css': { 'assets': [ ] }}});
   });
 
   it('should return the alternate search path in css block', function() {
