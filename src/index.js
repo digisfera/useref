@@ -90,18 +90,16 @@ var helpers = {
 
     target = target || 'replace';
 
-    if (refs.length) {
-      if (type === 'css') {
-        ref = '<link rel="stylesheet" href="' + target + '"\/>';
-      } else if (type === 'js') {
-        ref = '<script src="' + target + '"></script>';
-      }
-      else if (type == 'remove') {
-        ref = '';
-      }
-      else if (type == 'jsasync') {
-        ref = '<script src="' + target + '" async ></script>'
-      }
+    if (type === 'css') {
+      ref = '<link rel="stylesheet" href="' + target + '"\/>';
+    } else if (type === 'js') {
+      ref = '<script src="' + target + '"></script>';
+    }
+    else if (type == 'remove') {
+      ref = '';
+    }
+    else if (type == 'jsasync') {
+      ref = '<script src="' + target + '" async ></script>'
     }
     return content.replace(block, indent + ref);
   }
