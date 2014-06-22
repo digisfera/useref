@@ -3,7 +3,8 @@
 
 // start build pattern: <!-- build:[target] output -->
 // $1 is the type, $2 is the alternate search path, $3 is the destination file name
-var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*-->/;
+// var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*-->/;
+var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*([^\s]+)?\s*-->/;
 
 // end build pattern -- <!-- endbuild -->
 var regend = /<!--\s*endbuild\s*-->/;
@@ -57,7 +58,11 @@ function getBlocks(body) {
       block = true;
 
       if(build[1] === 'remove') { build[3] = String(removeBlockIndex++); }
-      sections[[build[1], build[3].trim()].join(':')] = last = [];
+      if(build[4]) {
+        sections[[build[1], build[3].trim(), build[4].trim()].join(':')] = last = [];
+      } else {
+        sections[[build[1], build[3].trim()].join(':')] = last = [];
+      }
     }
 
     // switch back block flag when endbuild
@@ -81,7 +86,7 @@ function getBlocks(body) {
 // -------
 var helpers = {
   // useref and useref:* are used with the blocks parsed from directives
-  useref: function (content, block, target, type) {
+  useref: function (content, block, target, type, attbs) {
     var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
         lines = block.split(linefeed),
         refs = lines.slice(1, -1),
@@ -102,6 +107,13 @@ var helpers = {
       else if (type == 'jsasync') {
         ref = '<script src="' + target + '" async ></script>'
       }
+      else if (type == 'requirejs') {
+        if(attbs) {
+          ref = '<script src="' + target + '" ' + attbs + ' ></script>'
+        } else {
+          ref = '<script src="' + target + '"></script>';
+        }
+      }
     }
     return content.replace(block, indent + ref);
   }
@@ -117,9 +129,10 @@ function updateReferences(blocks, content) {
     var block = blocks[key].join(linefeed),
       parts = key.split(':'),
       type = parts[0],
-      target = parts[1];
+      target = parts[1],
+      attbs =  parts[2];
 
-    content = helpers.useref(content, block, target, type);
+    content = helpers.useref(content, block, target, type, attbs);
   });
 
   return content;
@@ -165,5 +178,3 @@ function compactContent(blocks) {
 
   return result;
 }
-
-
