@@ -2,8 +2,8 @@
 'use strict';
 
 // start build pattern: <!-- build:[target] output -->
-// $1 is the type, $2 is the alternate search path, $3 is the destination file name
-var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*((.*))?\s*-->/;
+// $1 is the type, $2 is the alternate search path, $3 is the destination file name $4 extra attributes
+var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*(?:(.*))?\s*-->/;
 
 // end build pattern -- <!-- endbuild -->
 var regend = /<!--\s*endbuild\s*-->/;
