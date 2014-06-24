@@ -87,4 +87,22 @@ describe('html-ref-replace', function() {
     expect(result[0]).to.equal(fread(djoin('testfiles/11-expected.html')));
     expect(result[1]).to.eql({ jsasync: { 'scripts/combined.async.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
   });
+
+  it('should replace js blocks with async', function() {
+    var result = useRef(fread(djoin('testfiles/12.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/12-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.async.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
+  });
+
+  it('should replace js blocks with data-main', function() {
+    var result = useRef(fread(djoin('testfiles/13.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/13-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/bootstrap.js': { 'assets': [ 'config.js', '../bower_components/requirejs/require.js' ] }}});
+  });
+
+  it('should replace js blocks with data-main and async', function() {
+    var result = useRef(fread(djoin('testfiles/14.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/14-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/bootstrap.js': { 'assets': [ 'config.js', '../bower_components/requirejs/require.js' ] }}});
+  });
 });

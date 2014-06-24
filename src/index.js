@@ -3,8 +3,7 @@
 
 // start build pattern: <!-- build:[target] output -->
 // $1 is the type, $2 is the alternate search path, $3 is the destination file name
-// var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*-->/;
-var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*([^\s]+)?\s*-->/;
+var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*((.*))?\s*-->/;
 
 // end build pattern -- <!-- endbuild -->
 var regend = /<!--\s*endbuild\s*-->/;
@@ -99,20 +98,17 @@ var helpers = {
       if (type === 'css') {
         ref = '<link rel="stylesheet" href="' + target + '"\/>';
       } else if (type === 'js') {
-        ref = '<script src="' + target + '"></script>';
+          if(attbs) {
+              ref = '<script src="' + target + '" ' + attbs + ' ></script>'
+          } else {
+              ref = '<script src="' + target + '"></script>';
+          }
       }
       else if (type == 'remove') {
         ref = '';
       }
       else if (type == 'jsasync') {
         ref = '<script src="' + target + '" async ></script>'
-      }
-      else if (type == 'requirejs') {
-        if(attbs) {
-          ref = '<script src="' + target + '" ' + attbs + ' ></script>'
-        } else {
-          ref = '<script src="' + target + '"></script>';
-        }
       }
     }
     return content.replace(block, indent + ref);
@@ -178,3 +174,5 @@ function compactContent(blocks) {
 
   return result;
 }
+
+
