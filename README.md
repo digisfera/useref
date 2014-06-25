@@ -22,7 +22,7 @@ var result = useref(inputHtml)
 Blocks are expressed as:
 
 ```html
-<!-- build:<type>(alternate search path) <path> -->
+<!-- build:<type>(alternate search path) <path> <parameters> -->
 ... HTML Markup, list of script / link tags.
 <!-- endbuild -->
 ```
@@ -30,6 +30,7 @@ Blocks are expressed as:
 - **type**: either `js`, `css` or `remove`
 - **alternate search path**: (optional) By default the input files are relative to the treated file. Alternate search path allows one to change that
 - **path**: the file path of the optimized file, the target output
+- **parameters**: extra parameters that should be added to the tag
 
 An example of this in completed form can be seen below:
 
@@ -45,6 +46,11 @@ An example of this in completed form can be seen below:
   <!-- build:js scripts/combined.js -->
   <script type="text/javascript" src="scripts/one.js"></script>
   <script type="text/javascript" src="scripts/two.js"></script>
+  <!-- endbuild -->
+
+  <!-- build:js scripts/async.js async data-foo="bar" -->
+  <script type="text/javascript" src="scripts/three.js"></script>
+  <script type="text/javascript" src="scripts/four.js"></script>
   <!-- endbuild -->
 </body>
 </html>
@@ -65,8 +71,11 @@ var result = useref(sampleHtml)
 //     },
 //     js: {
 //       'scripts/combined.js': {
-//         'assets': [ 'css/one.js', 'css/two.js' ]
-//       }
+//         'assets': [ 'scripts/one.js', 'scripts/two.js' ]
+//       },
+//       'scripts/async.js': {
+//          'assets': [ 'scripts/three.js', 'scripts/four.js' ]
+//        }
 //     }
 //   }
 // ]
@@ -82,6 +91,7 @@ The resulting HTML would be:
 </head>
 <body>
   <script src="scripts/combined.js"></script>
+  <script src="scripts/async.js" async data-foo="bar" ></script>
 </body>
 </html>
 ```
