@@ -107,9 +107,6 @@ var helpers = {
       else if (type == 'remove') {
         ref = '';
       }
-      else if (type == 'jsasync') {
-        ref = '<script src="' + target + '" async ></script>'
-      }
     }
     return content.replace(block, indent + ref);
   }
