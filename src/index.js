@@ -96,7 +96,7 @@ var helpers = {
 
     if (refs.length) {
       if (type === 'css') {
-        ref = '<link rel="stylesheet" href="' + target + '"\/>';
+        ref = '<link rel="stylesheet" href="' + target + '">';
       } else if (type === 'js') {
           if(attbs) {
               ref = '<script src="' + target + '" ' + attbs + ' ></script>'
