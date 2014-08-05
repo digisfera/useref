@@ -96,7 +96,11 @@ var helpers = {
 
     if (refs.length) {
       if (type === 'css') {
-        ref = '<link rel="stylesheet" href="' + target + '">';
+          if(attbs) {
+              ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + ' >';
+          } else {
+              ref = '<link rel="stylesheet" href="' + target + '">';
+          }
       } else if (type === 'js') {
           if(attbs) {
               ref = '<script src="' + target + '" ' + attbs + ' ></script>'
