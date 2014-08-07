@@ -97,13 +97,13 @@ var helpers = {
     if (refs.length) {
       if (type === 'css') {
           if(attbs) {
-              ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + ' >';
+              ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
           } else {
               ref = '<link rel="stylesheet" href="' + target + '">';
           }
       } else if (type === 'js') {
           if(attbs) {
-              ref = '<script src="' + target + '" ' + attbs + ' ></script>'
+              ref = '<script src="' + target + '" ' + attbs + '></script>'
           } else {
               ref = '<script src="' + target + '"></script>';
           }
