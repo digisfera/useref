@@ -105,4 +105,9 @@ describe('html-ref-replace', function() {
     expect(result[0]).to.equal(fread(djoin('testfiles/15-expected.html')));
     expect(result[1]).to.eql({ css: { '/css/combined.css': { 'assets': [ '/css/one.css', '/css/two.css' ] }}});
   });
+
+  it('should reserve IE conditional comments', function() {
+    var result = useRef(fread(djoin('testfiles/16.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/16-expected.html')));
+  });
 });
