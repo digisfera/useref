@@ -8,6 +8,9 @@ var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)?\s*(?:(.*))?\s*--
 // end build pattern -- <!-- endbuild -->
 var regend = /<!--\s*endbuild\s*-->/;
 
+// IE conditional comment pattern: $1 is the start tag and $2 is the end tag
+var regcc = /(<!--\[if\s.*?\]>)[\s\S]*?(<!\[endif\]-->)/i;
+
 
 module.exports = function (content) {
   var blocks = getBlocks(content);
@@ -90,7 +93,8 @@ var helpers = {
         lines = block.split(linefeed),
         refs = lines.slice(1, -1),
         ref = '',
-        indent = (lines[0].match(/^\s*/) || [])[0];
+        indent = (lines[0].match(/^\s*/) || [])[0],
+        ccmatches = block.match(regcc);
 
     target = target || 'replace';
 
@@ -112,7 +116,17 @@ var helpers = {
         ref = '';
       }
     }
-    return content.replace(block, indent + ref);
+    
+    ref = indent + ref
+
+    // Reserve IE conditional comment if exist
+    if (ccmatches) {
+      ref = indent + ccmatches[1] + '\n' + 
+            ref + '\n' + 
+            indent + ccmatches[2];
+    }
+
+    return content.replace(block, ref);
   }
 };
 
