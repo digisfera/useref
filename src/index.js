@@ -11,6 +11,9 @@ var regend = /<!--\s*endbuild\s*-->/;
 // IE conditional comment pattern: $1 is the start tag and $2 is the end tag
 var regcc = /(<!--\[if\s.*?\]>)[\s\S]*?(<!\[endif\]-->)/i;
 
+// Character used to create key for the `sections` object. This should probably be done more elegantly.
+var sectionsJoinChar = '\ue000';
+
 
 module.exports = function (content) {
   var blocks = getBlocks(content);
@@ -61,9 +64,9 @@ function getBlocks(body) {
 
       if(build[1] === 'remove') { build[3] = String(removeBlockIndex++); }
       if(build[4]) {
-        sections[[build[1], build[3].trim(), build[4].trim()].join(':')] = last = [];
+        sections[[build[1], build[3].trim(), build[4].trim()].join(sectionsJoinChar)] = last = [];
       } else {
-        sections[[build[1], build[3].trim()].join(':')] = last = [];
+        sections[[build[1], build[3].trim()].join(sectionsJoinChar)] = last = [];
       }
     }
 
@@ -138,7 +141,7 @@ function updateReferences(blocks, content) {
   // handle blocks
   Object.keys(blocks).forEach(function (key) {
     var block = blocks[key].join(linefeed),
-      parts = key.split(':'),
+      parts = key.split(sectionsJoinChar),
       type = parts[0],
       target = parts[1],
       attbs =  parts[2];
@@ -156,7 +159,7 @@ function compactContent(blocks) {
   Object.keys(blocks).forEach(function (dest) {
     // Lines are the included scripts w/o the use blocks
     var lines = blocks[dest].slice(1, -1),
-      parts = dest.split(':'),
+      parts = dest.split(sectionsJoinChar),
       type = parts[0],
       // output is the useref block file
       output = parts[1],

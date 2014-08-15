@@ -110,4 +110,11 @@ describe('html-ref-replace', function() {
     var result = useRef(fread(djoin('testfiles/16.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/16-expected.html')));
   });
+
+
+  it('should replace css blocks with attributes containing `:` and parenthesis', function() {
+    var result = useRef(fread(djoin('testfiles/17.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/17-expected.html')));
+    expect(result[1]).to.eql({ css: { '/css/styles.css': { 'assets': [ '/css/styles.css' ] }}});
+  });
 });
