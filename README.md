@@ -95,3 +95,24 @@ The resulting HTML would be:
 </body>
 </html>
 ```
+
+## IE Conditional Comments
+
+Internet Explorer Conditional Comments are preserved. The code below:
+
+```html
+<!-- build:js scripts/combined.js   -->
+<!--[if lt IE 9]>
+<script type="text/javascript" src="scripts/this.js"></script>
+<script type="text/javascript" src="scripts/that.js"></script>
+<![endif]-->
+<!-- endbuild -->
+```
+
+Results in:
+
+```html
+<!--[if lt IE 9]>
+<script src="scripts/combined.js"></script>
+<![endif]-->
+```
