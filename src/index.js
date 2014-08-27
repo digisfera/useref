@@ -123,7 +123,7 @@ var helpers = {
 
     // Reserve IE conditional comment if exist
     if (ccmatches) {
-      ref = indent + ccmatches[1] + '\n' + ref + '\n' + indent + ccmatches[2];
+      ref = indent + ccmatches[1] + linefeed + ref + linefeed + indent + ccmatches[2];
     }
 
     return content.replace(block, ref);
