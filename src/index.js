@@ -103,30 +103,27 @@ var helpers = {
 
     if (refs.length) {
       if (type === 'css') {
-          if(attbs) {
-              ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
-          } else {
-              ref = '<link rel="stylesheet" href="' + target + '">';
-          }
+        if(attbs) {
+          ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
+        } else {
+          ref = '<link rel="stylesheet" href="' + target + '">';
+        }
       } else if (type === 'js') {
-          if(attbs) {
-              ref = '<script src="' + target + '" ' + attbs + '></script>'
-          } else {
-              ref = '<script src="' + target + '"></script>';
-          }
-      }
-      else if (type == 'remove') {
+        if(attbs) {
+          ref = '<script src="' + target + '" ' + attbs + '></script>';
+        } else {
+          ref = '<script src="' + target + '"></script>';
+        }
+      } else if (type === 'remove') {
         ref = '';
       }
     }
-    
-    ref = indent + ref
+
+    ref = indent + ref;
 
     // Reserve IE conditional comment if exist
     if (ccmatches) {
-      ref = indent + ccmatches[1] + '\n' + 
-            ref + '\n' + 
-            indent + ccmatches[2];
+      ref = indent + ccmatches[1] + '\n' + ref + '\n' + indent + ccmatches[2];
     }
 
     return content.replace(block, ref);
