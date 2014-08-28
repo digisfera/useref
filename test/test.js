@@ -111,6 +111,11 @@ describe('html-ref-replace', function() {
     expect(result[0]).to.equal(fread(djoin('testfiles/16-expected.html')));
   });
 
+  it('should reserve IE conditional comments with Windows-style line breaks', function() {
+    var result = useRef(fread(djoin('testfiles/16-win.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/16-win-expected.html')));
+  });
+
 
   it('should replace css blocks with attributes containing `:` and parenthesis', function() {
     var result = useRef(fread(djoin('testfiles/17.html')));
