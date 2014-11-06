@@ -11,6 +11,14 @@ var regend = /<!--\s*endbuild\s*-->/;
 // IE conditional comment pattern: $1 is the start tag and $2 is the end tag
 var regcc = /(<!--\[if\s.*?\]>)[\s\S]*?(<!\[endif\]-->)/i;
 
+// script element regular expression
+// TODO: Detect 'src' attribute.
+var regscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+
+// css link element regular expression
+// TODO: Determine if 'href' attribute is present.
+var regcss = /<link.*?>/gi;
+
 // Character used to create key for the `sections` object. This should probably be done more elegantly.
 var sectionsJoinChar = '\ue000';
 
@@ -94,29 +102,43 @@ var helpers = {
   useref: function (content, block, target, type, attbs) {
     var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
         lines = block.split(linefeed),
-        refs = lines.slice(1, -1),
         ref = '',
         indent = (lines[0].match(/^\s*/) || [])[0],
         ccmatches = block.match(regcc);
 
+    lines = lines.slice(1, -1);
     target = target || 'replace';
 
-    if (refs.length) {
-      if (type === 'css') {
-        if(attbs) {
-          ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
-        } else {
-          ref = '<link rel="stylesheet" href="' + target + '">';
+    if (type === 'css') {
+
+        // Check to see if there are any css references at all.
+        var hasCssRefs = lines.filter( function(line) {return regcss.test(line);}).length > 0;
+
+        if(hasCssRefs)
+        {
+            if(attbs && hasCssRefs) {
+              ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
+            } else {
+              ref = '<link rel="stylesheet" href="' + target + '">';
+            }
         }
-      } else if (type === 'js') {
-        if(attbs) {
-          ref = '<script src="' + target + '" ' + attbs + '></script>';
-        } else {
-          ref = '<script src="' + target + '"></script>';
+
+    } else if (type === 'js') {
+
+        // Check to see if there are any js references at all.
+        var hasJsRefs = lines.filter( function(line) {return regscript.test(line);}).length > 0;
+
+        if(hasJsRefs)
+        {
+            if(attbs) {
+              ref = '<script src="' + target + '" ' + attbs + '></script>';
+            } else {
+              ref = '<script src="' + target + '"></script>';
+            }
         }
-      } else if (type === 'remove') {
+
+    } else if (type === 'remove') {
         ref = '';
-      }
     }
 
     ref = indent + ref;
@@ -189,5 +211,3 @@ function compactContent(blocks) {
 
   return result;
 }
-
-
