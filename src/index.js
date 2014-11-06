@@ -11,6 +11,14 @@ var regend = /<!--\s*endbuild\s*-->/;
 // IE conditional comment pattern: $1 is the start tag and $2 is the end tag
 var regcc = /(<!--\[if\s.*?\]>)[\s\S]*?(<!\[endif\]-->)/i;
 
+// script element regular expression
+// TODO: Detect 'src' attribute.
+var regscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gmi;
+
+// css link element regular expression
+// TODO: Determine if 'href' attribute is present.
+var regcss = /<link.*?>/gmi;
+
 // Character used to create key for the `sections` object. This should probably be done more elegantly.
 var sectionsJoinChar = '\ue000';
 
@@ -94,29 +102,39 @@ var helpers = {
   useref: function (content, block, target, type, attbs) {
     var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
         lines = block.split(linefeed),
-        refs = lines.slice(1, -1),
         ref = '',
         indent = (lines[0].match(/^\s*/) || [])[0],
-        ccmatches = block.match(regcc);
+        ccmatches = block.match(regcc),
+        blockContent = lines.slice(1, -1).join('');
 
     target = target || 'replace';
 
-    if (refs.length) {
-      if (type === 'css') {
-        if(attbs) {
-          ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
-        } else {
-          ref = '<link rel="stylesheet" href="' + target + '">';
+    if (type === 'css') {
+
+        // Check to see if there are any css references at all.
+        if( blockContent.search(regcss) !== -1 )
+        {
+            if(attbs) {
+              ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
+            } else {
+              ref = '<link rel="stylesheet" href="' + target + '">';
+            }
         }
-      } else if (type === 'js') {
-        if(attbs) {
-          ref = '<script src="' + target + '" ' + attbs + '></script>';
-        } else {
-          ref = '<script src="' + target + '"></script>';
+
+    } else if (type === 'js') {
+
+        // Check to see if there are any js references at all.
+        if( blockContent.search(regscript) !== -1 )
+        {
+            if(attbs) {
+              ref = '<script src="' + target + '" ' + attbs + '></script>';
+            } else {
+              ref = '<script src="' + target + '"></script>';
+            }
         }
-      } else if (type === 'remove') {
+
+    } else if (type === 'remove') {
         ref = '';
-      }
     }
 
     ref = indent + ref;
@@ -189,5 +207,3 @@ function compactContent(blocks) {
 
   return result;
 }
-
-

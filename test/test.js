@@ -122,4 +122,19 @@ describe('html-ref-replace', function() {
     expect(result[0]).to.equal(fread(djoin('testfiles/17-expected.html')));
     expect(result[1]).to.eql({ css: { '/css/styles.css': { 'assets': [ '/css/styles.css' ] }}});
   });
+
+  it('should prevent just comments or whitespace from producing a css reference', function() {
+      var result = useRef(fread(djoin('testfiles/18.html')));
+      expect(result[0]).to.equal(fread(djoin('testfiles/18-expected.html')));
+  });
+
+  it('should prevent just comments or whitespace from producing a js reference', function() {
+      var result = useRef(fread(djoin('testfiles/19.html')));
+      expect(result[0]).to.equal(fread(djoin('testfiles/19-expected.html')));
+  });
+
+  it('should detect script tag with whitespace text', function() {
+      var result = useRef(fread(djoin('testfiles/20.html')));
+      expect(result[0]).to.equal(fread(djoin('testfiles/20-expected.html')));
+  });
 });
