@@ -13,11 +13,11 @@ var regcc = /(<!--\[if\s.*?\]>)[\s\S]*?(<!\[endif\]-->)/i;
 
 // script element regular expression
 // TODO: Detect 'src' attribute.
-var regscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+var regscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gmi;
 
 // css link element regular expression
 // TODO: Determine if 'href' attribute is present.
-var regcss = /<link.*?>/gi;
+var regcss = /<link.*?>/gmi;
 
 // Character used to create key for the `sections` object. This should probably be done more elegantly.
 var sectionsJoinChar = '\ue000';
@@ -104,19 +104,17 @@ var helpers = {
         lines = block.split(linefeed),
         ref = '',
         indent = (lines[0].match(/^\s*/) || [])[0],
-        ccmatches = block.match(regcc);
+        ccmatches = block.match(regcc),
+        blockContent = lines.slice(1, -1).join('');
 
-    lines = lines.slice(1, -1);
     target = target || 'replace';
 
     if (type === 'css') {
 
         // Check to see if there are any css references at all.
-        var hasCssRefs = lines.filter( function(line) {return regcss.test(line);}).length > 0;
-
-        if(hasCssRefs)
+        if( blockContent.search(regcss) !== -1 )
         {
-            if(attbs && hasCssRefs) {
+            if(attbs) {
               ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
             } else {
               ref = '<link rel="stylesheet" href="' + target + '">';
@@ -126,9 +124,7 @@ var helpers = {
     } else if (type === 'js') {
 
         // Check to see if there are any js references at all.
-        var hasJsRefs = lines.filter( function(line) {return regscript.test(line);}).length > 0;
-
-        if(hasJsRefs)
+        if( blockContent.search(regscript) !== -1 )
         {
             if(attbs) {
               ref = '<script src="' + target + '" ' + attbs + '></script>';
