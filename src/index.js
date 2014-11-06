@@ -192,7 +192,6 @@ function compactContent(blocks) {
       }
 
     }).reduce(function (a, b) {
-      b = (b ? b.split(',') : '');
       return b ? a.concat(b) : a;
     }, []);
 
