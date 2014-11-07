@@ -137,4 +137,11 @@ describe('html-ref-replace', function() {
       var result = useRef(fread(djoin('testfiles/20.html')));
       expect(result[0]).to.equal(fread(djoin('testfiles/20-expected.html')));
   });
+
+  it('should work on URLs with special characters', function() {
+    var result = useRef(fread(djoin('testfiles/21.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/21-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' ] }}});
+  });
+
 });
