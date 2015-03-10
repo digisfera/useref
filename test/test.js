@@ -143,7 +143,7 @@ describe('html-ref-replace', function() {
 
   it('should allow custom blocks', function() {
     var result = useRef(fread(djoin('testfiles/22.html')), {
-      test: function (content, target) {
+      test: function (content, target, options) {
         return content.replace('bower_components', target);
       }
     });

@@ -138,7 +138,7 @@ var helpers = {
     } else if (type === 'remove') {
         ref = '';
     } else {
-      ref = handler(blockContent, target);
+      ref = handler(blockContent, target, attbs);
     }
 
     ref = indent + ref;
