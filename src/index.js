@@ -23,10 +23,10 @@ var regcss = /<link.*?>/gmi;
 var sectionsJoinChar = '\ue000';
 
 
-module.exports = function (content) {
+module.exports = function (content, options) {
   var blocks = getBlocks(content);
 
-  content = updateReferences(blocks, content);
+  content = updateReferences(blocks, content, options);
 
   var replaced = compactContent(blocks);
 
@@ -73,8 +73,10 @@ function getBlocks(body) {
       if(build[1] === 'remove') { build[3] = String(removeBlockIndex++); }
       if(build[4]) {
         sections[[build[1], build[3].trim(), build[4].trim()].join(sectionsJoinChar)] = last = [];
-      } else {
+      } else if (build[3]) {
         sections[[build[1], build[3].trim()].join(sectionsJoinChar)] = last = [];
+      } else {
+        sections[build[1]] = last = [];
       }
     }
 
@@ -99,7 +101,7 @@ function getBlocks(body) {
 // -------
 var helpers = {
   // useref and useref:* are used with the blocks parsed from directives
-  useref: function (content, block, target, type, attbs) {
+  useref: function (content, block, target, type, attbs, handler) {
     var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
         lines = block.split(linefeed),
         ref = '',
@@ -135,6 +137,8 @@ var helpers = {
 
     } else if (type === 'remove') {
         ref = '';
+    } else {
+      ref = handler(blockContent, target);
     }
 
     ref = indent + ref;
@@ -148,7 +152,7 @@ var helpers = {
   }
 };
 
-function updateReferences(blocks, content) {
+function updateReferences(blocks, content, options) {
 
   // Determine the linefeed from the content
   var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n';
@@ -159,9 +163,10 @@ function updateReferences(blocks, content) {
       parts = key.split(sectionsJoinChar),
       type = parts[0],
       target = parts[1],
-      attbs =  parts[2];
+      attbs =  parts[2],
+      handler = options && options[type];
 
-    content = helpers.useref(content, block, target, type, attbs);
+    content = helpers.useref(content, block, target, type, attbs, handler);
   });
 
   return content;
