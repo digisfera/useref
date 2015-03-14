@@ -13,7 +13,6 @@ function fread(f) {
   return fs.readFileSync(f, { encoding: 'utf-8'});
 }
 
-
 describe('html-ref-replace', function() {
 
   it('should replace reference in css block and return replaced files', function() {
@@ -21,7 +20,6 @@ describe('html-ref-replace', function() {
     expect(result[0]).to.equal(fread(djoin('testfiles/01-expected.html')));
     expect(result[1]).to.eql({ css: { '/css/combined.css': { 'assets': [ '/css/one.css', '/css/two.css' ] }}});
   });
-
 
   it('should replace reference in js block and return replaced files', function() {
     var result = useRef(fread(djoin('testfiles/02.html')));
@@ -116,7 +114,6 @@ describe('html-ref-replace', function() {
     expect(result[0]).to.equal(fread(djoin('testfiles/16-win-expected.html')));
   });
 
-
   it('should replace css blocks with attributes containing `:` and parenthesis', function() {
     var result = useRef(fread(djoin('testfiles/17.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/17-expected.html')));
@@ -142,6 +139,16 @@ describe('html-ref-replace', function() {
     var result = useRef(fread(djoin('testfiles/21.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/21-expected.html')));
     expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' ] }}});
+  });
+
+  it('should allow custom blocks', function() {
+    var result = useRef(fread(djoin('testfiles/22.html')), {
+      test: function (content, target, options) {
+        return content.replace('bower_components', target);
+      }
+    });
+    expect(result[0]).to.equal(fread(djoin('testfiles/22-expected.html')));
+
   });
 
 });

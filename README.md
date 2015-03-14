@@ -116,3 +116,40 @@ Results in:
 <script src="scripts/combined.js"></script>
 <![endif]-->
 ```
+
+### Custom blocks
+
+Sometimes you need a bit more. If you would like to do custom processing, this is possible with a custom block, as demonstrated below.
+
+```
+<!-- build:import components -->
+<link rel="import" href="/bower_components/some/path"></link>
+<!-- endbuild -->
+```
+
+With
+
+```
+useref = require('node-useref')
+var result = useref(inputHtml, {
+  // each property corresponds to any blocks with the same name, e.g. "build:import"
+  import: function (content, target, options) {
+    // do something with `content` and return the desired HTML to replace the block content
+    return content.replace('bower_components', target);
+  }
+});
+```
+
+Becomes
+
+```
+<link rel="import" href="/components/some/path"></link>
+```
+
+The handler function gets the following arguments:
+
+- *content* (String): The content of the custom use block
+- *target* (String): The "path" value of the use block definition
+- *options* (String): The extra attributes from the use block definition, the developer can parse as JSON or do whatever they want with it
+
+Include a handler for each custom block type.
