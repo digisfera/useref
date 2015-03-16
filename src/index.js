@@ -137,18 +137,24 @@ var helpers = {
 
     } else if (type === 'remove') {
         ref = '';
-    } else {
+    } else if (handler) {
       ref = handler(blockContent, target, attbs);
     }
-
-    ref = indent + ref;
-
-    // Reserve IE conditional comment if exist
-    if (ccmatches) {
-      ref = indent + ccmatches[1] + linefeed + ref + linefeed + indent + ccmatches[2];
+    else {
+      ref = null;
     }
 
-    return content.replace(block, ref);
+    if(ref != null) {
+      ref = indent + ref;
+
+      // Reserve IE conditional comment if exist
+      if (ccmatches) {
+        ref = indent + ccmatches[1] + linefeed + ref + linefeed + indent + ccmatches[2];
+      }
+
+      return content.replace(block, ref);
+    }
+    else { return content; }
   }
 };
 

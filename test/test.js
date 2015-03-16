@@ -148,7 +148,11 @@ describe('html-ref-replace', function() {
       }
     });
     expect(result[0]).to.equal(fread(djoin('testfiles/22-expected.html')));
+  });
 
+  it('should silently ignore unexisting blocks', function() {
+    var result = useRef(fread(djoin('testfiles/23.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/23.html')));
   });
 
 });
