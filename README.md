@@ -133,7 +133,7 @@ With
 useref = require('node-useref')
 var result = useref(inputHtml, {
   // each property corresponds to any blocks with the same name, e.g. "build:import"
-  import: function (content, target, options) {
+  import: function (content, target, options, alternateSearchPath) {
     // do something with `content` and return the desired HTML to replace the block content
     return content.replace('bower_components', target);
   }
