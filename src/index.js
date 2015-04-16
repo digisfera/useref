@@ -101,7 +101,7 @@ function getBlocks(body) {
 // -------
 var helpers = {
   // useref and useref:* are used with the blocks parsed from directives
-  useref: function (content, block, target, type, attbs, handler) {
+  useref: function (content, block, target, type, attbs, alternateSearchPaths, handler) {
     var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
         lines = block.split(linefeed),
         ref = '',
@@ -138,7 +138,7 @@ var helpers = {
     } else if (type === 'remove') {
         ref = '';
     } else if (handler) {
-      ref = handler(blockContent, target, attbs);
+      ref = handler(blockContent, target, attbs, alternateSearchPaths);
     }
     else {
       ref = null;
@@ -166,13 +166,14 @@ function updateReferences(blocks, content, options) {
   // handle blocks
   Object.keys(blocks).forEach(function (key) {
     var block = blocks[key].join(linefeed),
-      parts = key.split(sectionsJoinChar),
-      type = parts[0],
-      target = parts[1],
-      attbs =  parts[2],
+      parts = block.match(regbuild),
+      type = parts[1],
+      alternateSearchPaths = parts[2],
+      target = parts[3],
+      attbs =  parts[4] && parts[4].trim(),
       handler = options && options[type];
 
-    content = helpers.useref(content, block, target, type, attbs, handler);
+    content = helpers.useref(content, block, target, type, attbs, alternateSearchPaths, handler);
   });
 
   return content;

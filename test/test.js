@@ -155,4 +155,11 @@ describe('html-ref-replace', function() {
     expect(result[0]).to.equal(fread(djoin('testfiles/23.html')));
   });
 
+  it('should pass alternateSearchPath to the custom block handler', function () {
+    useRef(fread(djoin('testfiles/24.html')), {
+      test: function (content, target, options, alternateSearchPath) {
+        expect(alternateSearchPath).to.equal('{.tmp,app}');
+      }
+    });
+  });
 });
