@@ -151,5 +151,6 @@ The handler function gets the following arguments:
 - *content* (String): The content of the custom use block
 - *target* (String): The "path" value of the use block definition
 - *options* (String): The extra attributes from the use block definition, the developer can parse as JSON or do whatever they want with it
+- *alternateSearchPath* (String): The alternate search path that can be used to maintain a coherent interface with standard handlers
 
 Include a handler for each custom block type.
