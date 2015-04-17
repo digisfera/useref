@@ -133,7 +133,7 @@ With
 useref = require('node-useref')
 var result = useref(inputHtml, {
   // each property corresponds to any blocks with the same name, e.g. "build:import"
-  import: function (content, target, options) {
+  import: function (content, target, options, alternateSearchPath) {
     // do something with `content` and return the desired HTML to replace the block content
     return content.replace('bower_components', target);
   }
@@ -151,5 +151,6 @@ The handler function gets the following arguments:
 - *content* (String): The content of the custom use block
 - *target* (String): The "path" value of the use block definition
 - *options* (String): The extra attributes from the use block definition, the developer can parse as JSON or do whatever they want with it
+- *alternateSearchPath* (String): The alternate search path that can be used to maintain a coherent interface with standard handlers
 
 Include a handler for each custom block type.

@@ -33,6 +33,15 @@ module.exports = function (content, options) {
   return [ content, replaced ];
 };
 
+function parseBuildBlock(block) {
+  var parts = block.match(regbuild);
+  return parts && {
+    type: parts[1],
+    alternateSearchPaths: parts[2],
+    target: parts[3] && parts[3].trim(),
+    attbs: parts[4] && parts[4].trim()
+  }
+}
 
 // Returns a hash object of all the directives for the given html. Results is
 // of the following form:
@@ -64,19 +73,19 @@ function getBlocks(body) {
     removeBlockIndex = 0;
 
   lines.forEach(function (l) {
-    var build = l.match(regbuild),
+    var build = parseBuildBlock(l),
       endbuild = regend.test(l);
 
     if (build) {
       block = true;
 
-      if(build[1] === 'remove') { build[3] = String(removeBlockIndex++); }
-      if(build[4]) {
-        sections[[build[1], build[3].trim(), build[4].trim()].join(sectionsJoinChar)] = last = [];
-      } else if (build[3]) {
-        sections[[build[1], build[3].trim()].join(sectionsJoinChar)] = last = [];
+      if(build.type === 'remove') { build.target = String(removeBlockIndex++); }
+      if(build.attbs) {
+        sections[[build.type, build.target, build.attbs].join(sectionsJoinChar)] = last = [];
+      } else if (build.target) {
+        sections[[build.type, build.target].join(sectionsJoinChar)] = last = [];
       } else {
-        sections[build[1]] = last = [];
+        sections[build.type] = last = [];
       }
     }
 
@@ -101,7 +110,7 @@ function getBlocks(body) {
 // -------
 var helpers = {
   // useref and useref:* are used with the blocks parsed from directives
-  useref: function (content, block, target, type, attbs, handler) {
+  useref: function (content, block, target, type, attbs, alternateSearchPaths, handler) {
     var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
         lines = block.split(linefeed),
         ref = '',
@@ -138,7 +147,7 @@ var helpers = {
     } else if (type === 'remove') {
         ref = '';
     } else if (handler) {
-      ref = handler(blockContent, target, attbs);
+      ref = handler(blockContent, target, attbs, alternateSearchPaths);
     }
     else {
       ref = null;
@@ -166,13 +175,10 @@ function updateReferences(blocks, content, options) {
   // handle blocks
   Object.keys(blocks).forEach(function (key) {
     var block = blocks[key].join(linefeed),
-      parts = key.split(sectionsJoinChar),
-      type = parts[0],
-      target = parts[1],
-      attbs =  parts[2],
-      handler = options && options[type];
+      parsed = parseBuildBlock(block),
+      handler = options && options[parsed.type];
 
-    content = helpers.useref(content, block, target, type, attbs, handler);
+    content = helpers.useref(content, block, parsed.target, parsed.type, parsed.attbs, parsed.alternateSearchPaths, handler);
   });
 
   return content;
@@ -189,7 +195,7 @@ function compactContent(blocks) {
       type = parts[0],
       // output is the useref block file
       output = parts[1],
-      build = String.prototype.match.apply( blocks[dest][0], [regbuild] );
+      build = parseBuildBlock(blocks[dest][0]);
 
     // parse out the list of assets to handle, and update the grunt config accordingly
     var assets = lines.map(function (tag) {
@@ -209,9 +215,9 @@ function compactContent(blocks) {
 
     result[type] = result[type] || {};
     result[type][output] = { 'assets': assets };
-    if (build[2]) {
+    if (build.alternateSearchPaths) {
       // Alternate search path
-      result[type][output].searchPaths = build[2];
+      result[type][output].searchPaths = build.alternateSearchPaths;
     }
   });
 
