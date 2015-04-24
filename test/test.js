@@ -162,4 +162,13 @@ describe('html-ref-replace', function() {
       }
     });
   });
+
+  it('should handle multiple identical blocks separately', function () {
+    var result = useRef(fread(djoin('testfiles/25.html')), {
+      testSame: function (content, target) {
+        return target;
+      }
+    });
+    expect(result[0]).to.equal(fread(djoin('testfiles/25-expected.html')));
+  });
 });
