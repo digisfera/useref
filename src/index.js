@@ -69,24 +69,32 @@ function getBlocks(body) {
   var lines = body.replace(/\r\n/g, '\n').split(/\n/),
     block = false,
     sections = {},
+    sectionIndex = 0,
     last,
     removeBlockIndex = 0;
 
   lines.forEach(function (l) {
     var build = parseBuildBlock(l),
-      endbuild = regend.test(l);
+      endbuild = regend.test(l),
+      sectionKey;
 
     if (build) {
       block = true;
 
       if(build.type === 'remove') { build.target = String(removeBlockIndex++); }
       if(build.attbs) {
-        sections[[build.type, build.target, build.attbs].join(sectionsJoinChar)] = last = [];
+        sectionKey = [build.type, build.target, build.attbs].join(sectionsJoinChar);
       } else if (build.target) {
-        sections[[build.type, build.target].join(sectionsJoinChar)] = last = [];
+        sectionKey = [build.type, build.target].join(sectionsJoinChar);
       } else {
-        sections[build.type] = last = [];
+        sectionKey = build.type;
       }
+
+      if (sections[sectionKey]) {
+        sectionKey += sectionIndex++;
+      }
+
+      sections[sectionKey] = last = [];
     }
 
     // switch back block flag when endbuild
