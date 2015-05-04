@@ -45,6 +45,12 @@ describe('html-ref-replace', function() {
     expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
   });
 
+  it('should handle comments and whitespace in blocks (without trailing space)', function() {
+    var result = useRef(fread(djoin('testfiles/03b.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/03-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
+  });
+
   it('should handle multiple blocks', function() {
     var result = useRef(fread(djoin('testfiles/04.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/04-expected.html')));
