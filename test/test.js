@@ -177,4 +177,9 @@ describe('html-ref-replace', function() {
     });
     expect(result[0]).to.equal(fread(djoin('testfiles/25-expected.html')));
   });
+
+  it('should handle jade files', function() {
+    var result = useRef(fread(djoin('testfiles/26.jade')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/26-expected.jade')));
+  });
 });

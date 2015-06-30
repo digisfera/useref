@@ -3,21 +3,21 @@
 
 // start build pattern: <!-- build:[target] output -->
 // $1 is the type, $2 is the alternate search path, $3 is the destination file name $4 extra attributes
-var regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+(?=-->)|[^\s]+)?\s*(?:(.*))?\s*-->/;
+var regbuild = /(?:<!--|\/\/-)\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+(?=-->)|[^\s]+)?\s*(?:(.*))?\s*-->/;
 
 // end build pattern -- <!-- endbuild -->
-var regend = /<!--\s*endbuild\s*-->/;
+var regend = /(?:<!--|\/\/-)\s*endbuild\s*-->/;
 
 // IE conditional comment pattern: $1 is the start tag and $2 is the end tag
 var regcc = /(<!--\[if\s.*?\]>)[\s\S]*?(<!\[endif\]-->)/i;
 
 // script element regular expression
 // TODO: Detect 'src' attribute.
-var regscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gmi;
+var regscript = /<?script\(?\b[^<]*(?:(?!<\/script>|\))<[^<]*)*(?:<\/script>|\))/gmi;
 
 // css link element regular expression
 // TODO: Determine if 'href' attribute is present.
-var regcss = /<link.*?>/gmi;
+var regcss = /<?link.*?(?:>|\))/gmi;
 
 // Character used to create key for the `sections` object. This should probably be done more elegantly.
 var sectionsJoinChar = '\ue000';
