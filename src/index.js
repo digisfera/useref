@@ -1,6 +1,8 @@
 /*global module:false, require:false */
 'use strict';
 
+var removeHtmlComments = require('remove-html-comments');
+
 // start build pattern: <!-- build:[target] output -->
 // $1 is the type, $2 is the alternate search path, $3 is the destination file name $4 extra attributes
 var regbuild = /(?:<!--|\/\/-)\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+(?=-->)|[^\s]+)?\s*(?:(.*))?\s*-->/;
@@ -204,6 +206,9 @@ function compactContent(blocks) {
       // output is the useref block file
       output = parts[1],
       build = parseBuildBlock(blocks[dest][0]);
+
+    // remove html comment blocks
+    lines = (removeHtmlComments(lines.join('\n')).data).split('\n');
 
     // parse out the list of assets to handle, and update the grunt config accordingly
     var assets = lines.map(function (tag) {
