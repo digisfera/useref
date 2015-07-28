@@ -51,6 +51,30 @@ describe('html-ref-replace', function() {
     expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
   });
 
+  it('should ignore script in comments (multi line)', function() {
+    var result = useRef(fread(djoin('testfiles/03c.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/03-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'scripts/this.js' ] }}});
+  });
+
+  it('should ignore script in comments (single line with "<!--script" )', function() {
+    var result = useRef(fread(djoin('testfiles/03d.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/03-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'scripts/this.js' ] }}});
+  });
+
+  it('should ignore script in comments (single line with "<!--<script" )', function() {
+    var result = useRef(fread(djoin('testfiles/03e.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/03-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'scripts/this.js' ] }}});
+  });
+
+  it('should ignore script in comments (single line with "<!-- <script" )', function() {
+    var result = useRef(fread(djoin('testfiles/03f.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/03-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'scripts/this.js' ] }}});
+  });
+
   it('should handle multiple blocks', function() {
     var result = useRef(fread(djoin('testfiles/04.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/04-expected.html')));
