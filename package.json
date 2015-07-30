@@ -21,9 +21,7 @@
   ],
   "author": "Manuel Cabral (m.cabral@digisfera.pt)",
   "license": "MIT",
-  "dependencies": {
-    "remove-html-comments": "^1.0.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "~1.8.1",
     "mocha": "~1.17.0"

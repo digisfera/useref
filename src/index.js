@@ -1,8 +1,6 @@
 /*global module:false, require:false */
 'use strict';
 
-var removeHtmlComments = require('remove-html-comments');
-
 // start build pattern: <!-- build:[target] output -->
 // $1 is the type, $2 is the alternate search path, $3 is the destination file name $4 extra attributes
 var regbuild = /(?:<!--|\/\/-)\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+(?=-->)|[^\s]+)?\s*(?:(.*))?\s*-->/;
@@ -24,6 +22,8 @@ var regcss = /<?link.*?(?:>|\))/gmi;
 // Character used to create key for the `sections` object. This should probably be done more elegantly.
 var sectionsJoinChar = '\ue000';
 
+// strip all comments from HTML except for conditionals
+var regComment = /<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->)(.|\n))*-->/g;
 
 module.exports = function (content, options) {
   var blocks = getBlocks(content);
@@ -194,6 +194,10 @@ function updateReferences(blocks, content, options) {
   return content;
 }
 
+function removeComments(lines) {
+  return lines.join('\n').replace(regComment, '').split('\n');
+}
+
 function compactContent(blocks) {
 
   var result = {};
@@ -208,7 +212,7 @@ function compactContent(blocks) {
       build = parseBuildBlock(blocks[dest][0]);
 
     // remove html comment blocks
-    lines = (removeHtmlComments(lines.join('\n')).data).split('\n');
+    lines = removeComments(lines);
 
     // parse out the list of assets to handle, and update the grunt config accordingly
     var assets = lines.map(function (tag) {
