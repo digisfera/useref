@@ -137,11 +137,13 @@ describe('html-ref-replace', function() {
   it('should reserve IE conditional comments', function() {
     var result = useRef(fread(djoin('testfiles/16.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/16-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
   });
 
   it('should reserve IE conditional comments with Windows-style line breaks', function() {
     var result = useRef(fread(djoin('testfiles/16-win.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/16-win-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
   });
 
   it('should replace css blocks with attributes containing `:` and parenthesis', function() {
@@ -153,16 +155,19 @@ describe('html-ref-replace', function() {
   it('should prevent just comments or whitespace from producing a css reference', function() {
       var result = useRef(fread(djoin('testfiles/18.html')));
       expect(result[0]).to.equal(fread(djoin('testfiles/18-expected.html')));
+      expect(result[1]).to.eql({ css: { '/css/styles.css': { 'assets': [] }}});
   });
 
   it('should prevent just comments or whitespace from producing a js reference', function() {
       var result = useRef(fread(djoin('testfiles/19.html')));
       expect(result[0]).to.equal(fread(djoin('testfiles/19-expected.html')));
+      expect(result[1]).to.eql({ js: { '/js/scripts.js': { 'assets': [] }}});
   });
 
   it('should detect script tag with whitespace text', function() {
       var result = useRef(fread(djoin('testfiles/20.html')));
       expect(result[0]).to.equal(fread(djoin('testfiles/20-expected.html')));
+      expect(result[1]).to.eql({ js: { 'scripts/combined.js': { 'assets': [ 'config.js' ] }}});
   });
 
   it('should work on URLs with special characters', function() {
@@ -178,11 +183,13 @@ describe('html-ref-replace', function() {
       }
     });
     expect(result[0]).to.equal(fread(djoin('testfiles/22-expected.html')));
+    expect(result[1]).to.eql({ test: { components: { 'assets': [ '/bower_components/some/path' ] }}});
   });
 
   it('should silently ignore unexisting blocks', function() {
     var result = useRef(fread(djoin('testfiles/23.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/23.html')));
+    expect(result[1]).to.eql({ invalidblock: { components: { 'assets': [ '/bower_components/some/path' ] }}});
   });
 
   it('should pass alternateSearchPath to the custom block handler', function () {
@@ -200,10 +207,29 @@ describe('html-ref-replace', function() {
       }
     });
     expect(result[0]).to.equal(fread(djoin('testfiles/25-expected.html')));
+    expect(result[1]).to.eql({ testSame: { target: { 'assets': [] }, target0: { 'assets': [] }}});
   });
 
   it('should handle jade files', function() {
     var result = useRef(fread(djoin('testfiles/26.jade')));
     expect(result[0]).to.equal(fread(djoin('testfiles/26-expected.jade')));
+    expect(result[1]).to.eql({
+      css: {
+        '/styles/vendor.css': {
+          'assets': [ '/bower_components/some_module/main.css' ],
+          'searchPaths': '{.tmp/serve,src}'
+        }
+      },
+      js: {
+        '/scripts/vendor.js': {
+          'assets': [ '/bower_components/jquery/dist/jquery.js' ],
+          'searchPaths': '{.tmp/serve,src}'
+        },
+        '/scripts/app.js': {
+          'assets': [ '/config.js' ],
+          'searchPaths': '{src,.tmp/serve}'
+        }
+      }
+    });
   });
 });
