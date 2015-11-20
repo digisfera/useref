@@ -1,6 +1,8 @@
 # useref
 
-Parse build blocks in HTML files to replace references
+**This project is no longer maintained**.
+
+Parse build blocks in HTML files to replace references.
 
 Extracted from the grunt plugin [grunt-useref](https://github.com/pajtai/grunt-useref).
 
