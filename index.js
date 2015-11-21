@@ -10,14 +10,6 @@ var regend = /(?:<!--|\/\/-)\s*endbuild\s*-->/;
 // IE conditional comment pattern: $1 is the start tag and $2 is the end tag
 var regcc = /(<!--\[if\s.*?\]>)[\s\S]*?(<!\[endif\]-->)/i;
 
-// script element regular expression
-// TODO: Detect 'src' attribute.
-var regscript = /<?script\(?\b[^<]*(?:(?!<\/script>|\))<[^<]*)*(?:<\/script>|\))/gmi;
-
-// css link element regular expression
-// TODO: Determine if 'href' attribute is present.
-var regcss = /<?link.*?(?:>|\))/gmi;
-
 // Character used to create key for the `sections` object. This should probably be done more elegantly.
 var sectionsJoinChar = '\ue000';
 
@@ -106,46 +98,71 @@ function getBlocks(body) {
   return sections;
 }
 
-// Helpers
-// -------
-var helpers = {
-  // useref and useref:* are used with the blocks parsed from directives
-  useref: function (content, block, target, type, attbs, alternateSearchPaths, handler) {
-    var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
+function transformCSSRefs(block, target, attbs) {
+  var ref = '';
+
+  // css link element regular expression
+  // TODO: Determine if 'href' attribute is present.
+  var regcss = /<?link.*?(?:>|\))/gmi;
+
+  // Check to see if there are any css references at all.
+  if (block.search(regcss) !== -1) {
+    if (attbs) {
+      ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
+    } else {
+      ref = '<link rel="stylesheet" href="' + target + '">';
+    }
+  }
+
+  return ref;
+}
+
+function transformJSRefs(block, target, attbs) {
+  var ref = '';
+
+  // script element regular expression
+  // TODO: Detect 'src' attribute.
+  var regscript = /<?script\(?\b[^<]*(?:(?!<\/script>|\))<[^<]*)*(?:<\/script>|\))/gmi;
+
+  // Check to see if there are any js references at all.
+  if (block.search(regscript) !== -1) {
+    if (attbs) {
+      ref = '<script src="' + target + '" ' + attbs + '></script>';
+    } else {
+      ref = '<script src="' + target + '"></script>';
+    }
+  }
+
+  return ref;
+}
+
+function transformReferences(blocks, content, options) {
+
+  // Determine the linefeed from the content
+  var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n';
+
+  // handle blocks
+  Object.keys(blocks).forEach(function (key) {
+    var block = blocks[key].join(linefeed),
+      parsed = parseBuildBlock(block),
+      handler = options && options[parsed.type],
       lines = block.split(linefeed),
       ref = '',
       indent = (lines[0].match(/^\s*/) || [])[0],
       ccmatches = block.match(regcc),
-      blockContent = lines.slice(1, -1).join('');
-
-    target = target || 'replace';
+      blockContent = lines.slice(1, -1).join(''),
+      target = parsed.target || 'replace',
+      type = parsed.type,
+      attbs = parsed.attbs;
 
     if (type === 'css') {
-
-      // Check to see if there are any css references at all.
-      if (blockContent.search(regcss) !== -1) {
-        if (attbs) {
-          ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
-        } else {
-          ref = '<link rel="stylesheet" href="' + target + '">';
-        }
-      }
-
+      ref = transformCSSRefs(blockContent, target, attbs);
     } else if (type === 'js') {
-
-      // Check to see if there are any js references at all.
-      if (blockContent.search(regscript) !== -1) {
-        if (attbs) {
-          ref = '<script src="' + target + '" ' + attbs + '></script>';
-        } else {
-          ref = '<script src="' + target + '"></script>';
-        }
-      }
-
+      ref = transformJSRefs(blockContent, target, attbs);
     } else if (type === 'remove') {
       ref = '';
     } else if (handler) {
-      ref = handler(blockContent, target, attbs, alternateSearchPaths);
+      ref = handler(blockContent, target, attbs, parsed.alternateSearchPaths);
     } else {
       ref = null;
     }
@@ -158,25 +175,8 @@ var helpers = {
         ref = indent + ccmatches[1] + linefeed + ref + linefeed + indent + ccmatches[2];
       }
 
-      return content.replace(block, ref);
-    } else {
-      return content;
+      content = content.replace(block, ref);
     }
-  }
-};
-
-function updateReferences(blocks, content, options) {
-
-  // Determine the linefeed from the content
-  var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n';
-
-  // handle blocks
-  Object.keys(blocks).forEach(function (key) {
-    var block = blocks[key].join(linefeed),
-      parsed = parseBuildBlock(block),
-      handler = options && options[parsed.type];
-
-    content = helpers.useref(content, block, parsed.target, parsed.type, parsed.attbs, parsed.alternateSearchPaths, handler);
   });
 
   return content;
@@ -197,31 +197,27 @@ function compactContent(blocks) {
       type = parts[0],
       // output is the useref block file
       output = parts[1],
-      build = parseBuildBlock(blocks[dest][0]);
+      build = parseBuildBlock(blocks[dest][0]),
+      assets;
 
     // remove html comment blocks
     lines = removeComments(lines);
 
     // parse out the list of assets to handle, and update the grunt config accordingly
-    var assets = lines.map(function (tag) {
-
-      // The asset is the string of the referenced source file
-      var asset = (tag.match(/(href|src)=["']([^'"]+)["']/) || [])[2];
-
+    assets = lines.map(function (tag) {
       // Allow white space and comment in build blocks by checking if this line has an asset or not
-      if (asset) {
-        return asset;
-      }
-
+      // The asset is the string of the referenced source file
+      return (tag.match(/(href|src)=["']([^'"]+)["']/) || [])[2];
     }).reduce(function (a, b) {
       return b ? a.concat(b) : a;
     }, []);
 
-
     result[type] = result[type] || {};
+
     result[type][output] = {
       'assets': assets
     };
+
     if (build.alternateSearchPaths) {
       // Alternate search path
       result[type][output].searchPaths = build.alternateSearchPaths;
@@ -232,11 +228,9 @@ function compactContent(blocks) {
 }
 
 module.exports = function (content, options) {
-  var blocks = getBlocks(content);
+  var blocks = getBlocks(content),
+    transformedContent = transformReferences(blocks, content, options),
+    replaced = compactContent(blocks);
 
-  content = updateReferences(blocks, content, options);
-
-  var replaced = compactContent(blocks);
-
-  return [ content, replaced ];
+  return [ transformedContent, replaced ];
 };

@@ -1,6 +1,6 @@
 # useref [![Build Status](https://travis-ci.org/jonkemp/useref.svg?branch=master)](https://travis-ci.org/jonkemp/useref) [![Coverage Status](https://coveralls.io/repos/jonkemp/gulp-useref/badge.svg?branch=master&service=github)](https://coveralls.io/github/jonkemp/gulp-useref?branch=master)
 
-Parse build blocks in HTML files to replace references
+> Parse build blocks in HTML files to replace references
 
 Extracted from the grunt plugin [grunt-useref](https://github.com/pajtai/grunt-useref).
 
