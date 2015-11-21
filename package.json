@@ -2,12 +2,15 @@
   "name": "node-useref",
   "version": "0.3.15",
   "description": "Parse build blocks in HTML files to replace references",
-  "main": "src/index.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
+  "engines": {
+    "node": ">=0.10.0"
+  },
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha"
   },
   "keywords": [
     "build",
@@ -19,15 +22,19 @@
     "link",
     "ref"
   ],
-  "author": "Manuel Cabral (m.cabral@digisfera.pt)",
+  "author": "Jonathan Kemp <kempdogg@gmail.com> (http://jonkemp.com/)",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "chai": "~1.8.1",
-    "mocha": "~1.17.0"
+    "chai": "^3.4.1",
+    "mocha": "*"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/manuelcabral/useref.git"
-  }
+    "url": "git://github.com/jonkemp/useref.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonkemp/useref/issues"
+  },
+  "homepage": "https://github.com/jonkemp/useref"
 }

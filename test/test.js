@@ -4,7 +4,7 @@
 var expect = require('chai').expect;
 var fs = require('fs');
 var path = require('path');
-var useRef = require('../src/index');
+var useRef = require('../index');
 
 function djoin(p) {
   return path.normalize(path.join(__dirname, p));
