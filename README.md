@@ -7,13 +7,13 @@ Extracted from the grunt plugin [grunt-useref](https://github.com/pajtai/grunt-u
 ## Installation
 
 ```
-npm install node-useref
+npm install useref
 ```
 
 ## Usage
 
 ```js
-useref = require('node-useref')
+useref = require('useref')
 var result = useref(inputHtml)
 // result = [ replacedHtml, { type: { path: { 'assets': [ replacedFiles] }}} ]
 ```
@@ -130,7 +130,7 @@ Sometimes you need a bit more. If you would like to do custom processing, this i
 With
 
 ```
-useref = require('node-useref')
+useref = require('useref')
 var result = useref(inputHtml, {
   // each property corresponds to any blocks with the same name, e.g. "build:import"
   import: function (content, target, options, alternateSearchPath) {
