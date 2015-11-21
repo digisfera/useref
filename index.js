@@ -1,4 +1,3 @@
-/*global module:false, require:false */
 'use strict';
 
 // start build pattern: <!-- build:[target] output -->
@@ -24,16 +23,6 @@ var sectionsJoinChar = '\ue000';
 
 // strip all comments from HTML except for conditionals
 var regComment = /<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->)(.|\n))*-->/g;
-
-module.exports = function (content, options) {
-  var blocks = getBlocks(content);
-
-  content = updateReferences(blocks, content, options);
-
-  var replaced = compactContent(blocks);
-
-  return [ content, replaced ];
-};
 
 function parseBuildBlock(block) {
   var parts = block.match(regbuild);
@@ -116,7 +105,6 @@ function getBlocks(body) {
   // including all the references and including the build block comment closer.
   return sections;
 }
-
 
 // Helpers
 // -------
@@ -242,3 +230,13 @@ function compactContent(blocks) {
 
   return result;
 }
+
+module.exports = function (content, options) {
+  var blocks = getBlocks(content);
+
+  content = updateReferences(blocks, content, options);
+
+  var replaced = compactContent(blocks);
+
+  return [ content, replaced ];
+};
