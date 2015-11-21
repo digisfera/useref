@@ -1,4 +1,4 @@
-# useref
+# useref [![Build Status](https://travis-ci.org/jonkemp/useref.svg?branch=master)](https://travis-ci.org/jonkemp/useref)
 
 Parse build blocks in HTML files to replace references
 
