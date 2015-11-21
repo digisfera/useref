@@ -154,3 +154,7 @@ The handler function gets the following arguments:
 - *alternateSearchPath* (String): The alternate search path that can be used to maintain a coherent interface with standard handlers
 
 Include a handler for each custom block type.
+
+## License
+
+MIT © [Jonathan Kemp](http://jonkemp.com)
