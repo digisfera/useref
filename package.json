@@ -12,6 +12,9 @@
   "scripts": {
     "test": "mocha"
   },
+  "files": [
+    "index.js"
+  ],
   "keywords": [
     "build",
     "blocks",
@@ -24,17 +27,9 @@
   ],
   "author": "Jonathan Kemp <kempdogg@gmail.com> (http://jonkemp.com/)",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
     "chai": "^3.4.1",
     "mocha": "*"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/jonkemp/useref.git"
-  },
-  "bugs": {
-    "url": "https://github.com/jonkemp/useref/issues"
-  },
-  "homepage": "https://github.com/jonkemp/useref"
+  "repository": "jonkemp/useref"
 }
