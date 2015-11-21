@@ -10,7 +10,9 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "coverage": "nyc npm test && nyc report",
+    "coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
   },
   "files": [
     "index.js"
@@ -29,7 +31,9 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.4.1",
-    "mocha": "*"
+    "coveralls": "^2.11.4",
+    "mocha": "*",
+    "nyc": "^3.2.2"
   },
   "repository": "jonkemp/useref"
 }
