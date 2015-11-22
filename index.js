@@ -150,7 +150,7 @@ function transformReferences(blocks, content, options) {
       ref = '',
       indent = (lines[0].match(/^\s*/) || [])[0],
       ccmatches = block.match(regcc),
-      blockContent = lines.slice(1, -1).join(''),
+      blockContent = lines.slice(1, -1).join(linefeed),
       target = parsed.target || 'replace',
       type = parsed.type,
       attbs = parsed.attbs;
@@ -175,7 +175,11 @@ function transformReferences(blocks, content, options) {
         ref = indent + ccmatches[1] + linefeed + ref + linefeed + indent + ccmatches[2];
       }
 
-      content = content.replace(block, ref);
+      if (options.noconcat) {
+        content = content.replace(block, blockContent);
+      } else {
+        content = content.replace(block, ref);
+      }
     }
   });
 
@@ -229,7 +233,8 @@ function compactContent(blocks) {
 
 module.exports = function (content, options) {
   var blocks = getBlocks(content),
-    transformedContent = transformReferences(blocks, content, options),
+    opts = options || {},
+    transformedContent = transformReferences(blocks, content, opts),
     replaced = compactContent(blocks);
 
   return [ transformedContent, replaced ];

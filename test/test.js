@@ -27,6 +27,16 @@ describe('html-ref-replace', function() {
     expect(result[1]).to.eql({ js: { 'scripts/combined.concat.min.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
   });
 
+  it('should not replace reference in css block with noconcat option', function() {
+    var result = useRef(fread(djoin('testfiles/01.html')), { noconcat: true });
+    expect(result[0]).to.equal(fread(djoin('testfiles/noconcat-css.html')));
+  });
+
+  it('should not replace reference in js block with noconcat option', function() {
+    var result = useRef(fread(djoin('testfiles/02.html')), { noconcat: true });
+    expect(result[0]).to.equal(fread(djoin('testfiles/noconcat-js.html')));
+  });
+
   it('should remove `remove` block', function() {
     var result = useRef(fread(djoin('testfiles/09.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/09-expected.html')));
