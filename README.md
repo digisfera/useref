@@ -1,4 +1,4 @@
-# useref [![Build Status](https://travis-ci.org/jonkemp/useref.svg?branch=master)](https://travis-ci.org/jonkemp/useref) [![Coverage Status](https://coveralls.io/repos/jonkemp/gulp-useref/badge.svg?branch=master&service=github)](https://coveralls.io/github/jonkemp/gulp-useref?branch=master)
+# useref [![Build Status](https://travis-ci.org/jonkemp/useref.svg?branch=master)](https://travis-ci.org/jonkemp/useref) [![Coverage Status](https://coveralls.io/repos/jonkemp/useref/badge.svg?branch=master&service=github)](https://coveralls.io/github/jonkemp/useref?branch=master)
 
 > Parse build blocks in HTML files to replace references
 
@@ -154,6 +154,15 @@ The handler function gets the following arguments:
 - *alternateSearchPath* (String): The alternate search path that can be used to maintain a coherent interface with standard handlers
 
 Include a handler for each custom block type.
+
+### Options
+
+#### options.noconcat
+
+Type: `Boolean`  
+Default: `false`  
+
+Strips out build comments but leaves the rest of the block intact without replacing any tags.
 
 ## License
 
