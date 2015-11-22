@@ -164,6 +164,20 @@ Default: `false`
 
 Strips out build comments but leaves the rest of the block intact without replacing any tags.
 
+```html
+<!-- build:js scripts/combined.js   -->
+<script type="text/javascript" src="scripts/this.js"></script>
+<script type="text/javascript" src="scripts/that.js"></script>
+<!-- endbuild -->
+```
+
+Results in:
+
+```html
+<script type="text/javascript" src="scripts/this.js"></script>
+<script type="text/javascript" src="scripts/that.js"></script>
+```
+
 ## License
 
 MIT © [Jonathan Kemp](http://jonkemp.com)
