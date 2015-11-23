@@ -1,5 +1,7 @@
 # useref [![Build Status](https://travis-ci.org/jonkemp/useref.svg?branch=master)](https://travis-ci.org/jonkemp/useref) [![Coverage Status](https://coveralls.io/repos/jonkemp/useref/badge.svg?branch=master&service=github)](https://coveralls.io/github/jonkemp/useref?branch=master)
 
+[![NPM](https://nodei.co/npm/useref.png?downloads=true)](https://nodei.co/npm/useref/)
+
 > Parse build blocks in HTML files to replace references
 
 Extracted from the grunt plugin [grunt-useref](https://github.com/pajtai/grunt-useref).
