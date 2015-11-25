@@ -1,6 +1,6 @@
 # useref
 
-**This project is no longer maintained**.
+**This project is no longer maintained. Please see [this fork](https://github.com/jonkemp/useref).**
 
 Parse build blocks in HTML files to replace references.
 
