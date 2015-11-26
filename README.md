@@ -180,6 +180,10 @@ Results in:
 <script type="text/javascript" src="scripts/that.js"></script>
 ```
 
+## Contributing
+
+See the [CONTRIBUTING Guidelines](https://github.com/jonkemp/useref/blob/master/CONTRIBUTING.md)
+
 ## License
 
 MIT © [Jonathan Kemp](http://jonkemp.com)
