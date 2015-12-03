@@ -123,7 +123,7 @@ Results in:
 
 Sometimes you need a bit more. If you would like to do custom processing, this is possible with a custom block, as demonstrated below.
 
-```
+```html
 <!-- build:import components -->
 <link rel="import" href="/bower_components/some/path"></link>
 <!-- endbuild -->
@@ -131,7 +131,7 @@ Sometimes you need a bit more. If you would like to do custom processing, this i
 
 With
 
-```
+```js
 useref = require('useref')
 var result = useref(inputHtml, {
   // each property corresponds to any blocks with the same name, e.g. "build:import"
@@ -144,7 +144,7 @@ var result = useref(inputHtml, {
 
 Becomes
 
-```
+```html
 <link rel="import" href="/components/some/path"></link>
 ```
 
