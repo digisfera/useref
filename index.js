@@ -18,6 +18,7 @@ var regComment = /<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->)(.|\n))*-->/g;
 
 function parseBuildBlock(block) {
   var parts = block.match(regbuild);
+
   return parts && {
     type: parts[1],
     alternateSearchPaths: parts[2],
@@ -68,9 +69,9 @@ function getBlocks(body) {
         build.target = String(removeBlockIndex++);
       }
       if (build.attbs) {
-        sectionKey = [build.type, build.target, build.attbs].join(sectionsJoinChar);
+        sectionKey = [ build.type, build.target, build.attbs ].join(sectionsJoinChar);
       } else if (build.target) {
-        sectionKey = [build.type, build.target].join(sectionsJoinChar);
+        sectionKey = [ build.type, build.target ].join(sectionsJoinChar);
       } else {
         sectionKey = build.type;
       }
@@ -167,7 +168,7 @@ function transformReferences(blocks, content, options) {
       ref = null;
     }
 
-    if (ref != null) {
+    if (ref !== null) {
       ref = indent + ref;
 
       // Reserve IE conditional comment if exist
@@ -199,6 +200,7 @@ function compactContent(blocks) {
     var lines = blocks[dest].slice(1, -1),
       parts = dest.split(sectionsJoinChar),
       type = parts[0],
+
       // output is the useref block file
       output = parts[1],
       build = parseBuildBlock(blocks[dest][0]),
