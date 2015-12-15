@@ -15,8 +15,8 @@ npm install useref
 ## Usage
 
 ```js
-useref = require('useref')
-var result = useref(inputHtml)
+var useref = require('useref');
+var result = useref(inputHtml);
 // result = [ replacedHtml, { type: { path: { 'assets': [ replacedFiles] }}} ]
 ```
 
@@ -61,7 +61,7 @@ An example of this in completed form can be seen below:
 The module would be used with the above sample HTML as follows:
 
 ```js
-var result = useref(sampleHtml)
+var result = useref(sampleHtml);
 
 // [
 //   resultHtml,
@@ -132,7 +132,7 @@ Sometimes you need a bit more. If you would like to do custom processing, this i
 With
 
 ```js
-useref = require('useref')
+var useref = require('useref');
 var result = useref(inputHtml, {
   // each property corresponds to any blocks with the same name, e.g. "build:import"
   import: function (content, target, options, alternateSearchPath) {
