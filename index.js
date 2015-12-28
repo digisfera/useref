@@ -27,6 +27,20 @@ function parseBuildBlock(block) {
   };
 }
 
+function getSectionKey(build) {
+  var sectionKey;
+
+  if (build.attbs) {
+    sectionKey = [ build.type, build.target, build.attbs ].join(sectionsJoinChar);
+  } else if (build.target) {
+    sectionKey = [ build.type, build.target ].join(sectionsJoinChar);
+  } else {
+    sectionKey = build.type;
+  }
+
+  return sectionKey;
+}
+
 // Returns a hash object of all the directives for the given html. Results is
 // of the following form:
 //
@@ -68,13 +82,8 @@ function getBlocks(body) {
       if (build.type === 'remove') {
         build.target = String(removeBlockIndex++);
       }
-      if (build.attbs) {
-        sectionKey = [ build.type, build.target, build.attbs ].join(sectionsJoinChar);
-      } else if (build.target) {
-        sectionKey = [ build.type, build.target ].join(sectionsJoinChar);
-      } else {
-        sectionKey = build.type;
-      }
+
+      sectionKey = getSectionKey(build);
 
       if (sections[sectionKey]) {
         sectionKey += sectionIndex++;
@@ -83,14 +92,13 @@ function getBlocks(body) {
       sections[sectionKey] = last = [];
     }
 
-    // switch back block flag when endbuild
-    if (block && endbuild) {
-      last.push(l);
-      block = false;
-    }
-
     if (block && last) {
       last.push(l);
+    }
+
+    // switch back block flag when endbuild
+    if (block && endbuild) {
+      block = false;
     }
   });
 
@@ -137,36 +145,43 @@ function transformJSRefs(block, target, attbs) {
   return ref;
 }
 
-function transformReferences(blocks, content, options) {
+function getRef(block, blockContent, options) {
+  var ref = '',
+    parsed = parseBuildBlock(block),
+    handler = options && options[parsed.type],
+    target = parsed.target || 'replace',
+    type = parsed.type,
+    attbs = parsed.attbs;
 
-  // Determine the linefeed from the content
-  var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n';
+  if (type === 'css') {
+    ref = transformCSSRefs(blockContent, target, attbs);
+  } else if (type === 'js') {
+    ref = transformJSRefs(blockContent, target, attbs);
+  } else if (type === 'remove') {
+    ref = '';
+  } else if (handler) {
+    ref = handler(blockContent, target, attbs, parsed.alternateSearchPaths);
+  } else {
+    ref = null;
+  }
+
+  return ref;
+}
+
+function transformReferences(blocks, content, options) {
+  var replaced = content,
+
+    // Determine the linefeed from the content
+    linefeed = /\r\n/g.test(content) ? '\r\n' : '\n';
 
   // handle blocks
   Object.keys(blocks).forEach(function (key) {
     var block = blocks[key].join(linefeed),
-      parsed = parseBuildBlock(block),
-      handler = options && options[parsed.type],
       lines = block.split(linefeed),
-      ref = '',
       indent = (lines[0].match(/^\s*/) || [])[0],
       ccmatches = block.match(regcc),
       blockContent = lines.slice(1, -1).join(linefeed),
-      target = parsed.target || 'replace',
-      type = parsed.type,
-      attbs = parsed.attbs;
-
-    if (type === 'css') {
-      ref = transformCSSRefs(blockContent, target, attbs);
-    } else if (type === 'js') {
-      ref = transformJSRefs(blockContent, target, attbs);
-    } else if (type === 'remove') {
-      ref = '';
-    } else if (handler) {
-      ref = handler(blockContent, target, attbs, parsed.alternateSearchPaths);
-    } else {
-      ref = null;
-    }
+      ref = getRef(block, blockContent, options);
 
     if (ref !== null) {
       ref = indent + ref;
@@ -177,14 +192,14 @@ function transformReferences(blocks, content, options) {
       }
 
       if (options.noconcat) {
-        content = content.replace(block, blockContent);
+        replaced = replaced.replace(block, blockContent);
       } else {
-        content = content.replace(block, ref);
+        replaced = replaced.replace(block, ref);
       }
     }
   });
 
-  return content;
+  return replaced;
 }
 
 function removeComments(lines) {
