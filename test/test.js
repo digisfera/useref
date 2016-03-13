@@ -156,6 +156,12 @@ describe('html-ref-replace', function() {
     expect(result[1]).to.eql({ js: { 'scripts/combined.js': { 'assets': [ 'scripts/this.js', 'scripts/that.js' ] }}});
   });
 
+  it('should support symfony2 twig and laravel5 blade assets', function() {
+    var result = useRef(fread(djoin('testfiles/27.asset.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/27.asset-expected.html')));
+    expect(result[1]).to.eql({ js: { 'scripts/combined.js': { 'assets': [ 'symfony/js/script.js', 'laravel/js/script.js' ] }}});
+  });
+
   it('should replace css blocks with attributes containing `:` and parenthesis', function() {
     var result = useRef(fread(djoin('testfiles/17.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/17-expected.html')));
