@@ -157,6 +157,17 @@ The handler function gets the following arguments:
 
 Include a handler for each custom block type.
 
+### Symfony Twig and Laravel 5 Blade assets
+
+Works with the [symfony2 assetic](http://symfony.com/doc/current/cookbook/assetic/asset_management.html) and [laravel asset](https://laravel.com/docs/5.1/helpers#method-asset) and [elixir](https://laravel.com/docs/5.2/elixir#versioning-and-cache-busting) links in twig or blade or html or php.
+
+```html
+<!-- build:js scripts/combined.js -->
+<script src="{{ asset('symfony/js/script.js') }}"></script>
+<script src="{{ elixir('laravel/js/script.js') }}"></script>
+<!-- endbuild -->
+```
+
 ### Options
 
 #### options.noconcat
