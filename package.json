@@ -34,10 +34,10 @@
     "chai": "^3.4.1",
     "coveralls": "^2.11.4",
     "gulp": "^3.9.0",
-    "gulp-eslint": "^1.1.1",
-    "gulp-mocha": "^2.2.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-mocha": "^3.0.1",
     "mocha": "*",
-    "nyc": "^3.2.2"
+    "nyc": "^8.1.0"
   },
   "repository": "jonkemp/useref"
 }
