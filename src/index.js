@@ -42,7 +42,7 @@ function parseBuildBlock(block) {
     alternateSearchPaths: parts[2],
     target: parts[3] && parts[3].trim(),
     attbs: parts[4] && parts[4].trim()
-  }
+  };
 }
 
 // Returns a hash object of all the directives for the given html. Results is
@@ -83,8 +83,10 @@ function getBlocks(body) {
     if (build) {
       block = true;
 
-      if(build.type === 'remove') { build.target = String(removeBlockIndex++); }
-      if(build.attbs) {
+      if (build.type === 'remove') {
+        build.target = String(removeBlockIndex++);
+      }
+      if (build.attbs) {
         sectionKey = [build.type, build.target, build.attbs].join(sectionsJoinChar);
       } else if (build.target) {
         sectionKey = [build.type, build.target].join(sectionsJoinChar);
@@ -122,48 +124,45 @@ var helpers = {
   // useref and useref:* are used with the blocks parsed from directives
   useref: function (content, block, target, type, attbs, alternateSearchPaths, handler) {
     var linefeed = /\r\n/g.test(content) ? '\r\n' : '\n',
-        lines = block.split(linefeed),
-        ref = '',
-        indent = (lines[0].match(/^\s*/) || [])[0],
-        ccmatches = block.match(regcc),
-        blockContent = lines.slice(1, -1).join('');
+      lines = block.split(linefeed),
+      ref = '',
+      indent = (lines[0].match(/^\s*/) || [])[0],
+      ccmatches = block.match(regcc),
+      blockContent = lines.slice(1, -1).join('');
 
     target = target || 'replace';
 
     if (type === 'css') {
 
-        // Check to see if there are any css references at all.
-        if( blockContent.search(regcss) !== -1 )
-        {
-            if(attbs) {
-              ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
-            } else {
-              ref = '<link rel="stylesheet" href="' + target + '">';
-            }
+      // Check to see if there are any css references at all.
+      if (blockContent.search(regcss) !== -1) {
+        if (attbs) {
+          ref = '<link rel="stylesheet" href="' + target + '" ' + attbs + '>';
+        } else {
+          ref = '<link rel="stylesheet" href="' + target + '">';
         }
+      }
 
     } else if (type === 'js') {
 
-        // Check to see if there are any js references at all.
-        if( blockContent.search(regscript) !== -1 )
-        {
-            if(attbs) {
-              ref = '<script src="' + target + '" ' + attbs + '></script>';
-            } else {
-              ref = '<script src="' + target + '"></script>';
-            }
+      // Check to see if there are any js references at all.
+      if (blockContent.search(regscript) !== -1) {
+        if (attbs) {
+          ref = '<script src="' + target + '" ' + attbs + '></script>';
+        } else {
+          ref = '<script src="' + target + '"></script>';
         }
+      }
 
     } else if (type === 'remove') {
-        ref = '';
+      ref = '';
     } else if (handler) {
       ref = handler(blockContent, target, attbs, alternateSearchPaths);
-    }
-    else {
+    } else {
       ref = null;
     }
 
-    if(ref != null) {
+    if (ref != null) {
       ref = indent + ref;
 
       // Reserve IE conditional comment if exist
@@ -172,8 +171,9 @@ var helpers = {
       }
 
       return content.replace(block, ref);
+    } else {
+      return content;
     }
-    else { return content; }
   }
 };
 
@@ -231,7 +231,9 @@ function compactContent(blocks) {
 
 
     result[type] = result[type] || {};
-    result[type][output] = { 'assets': assets };
+    result[type][output] = {
+      'assets': assets
+    };
     if (build.alternateSearchPaths) {
       // Alternate search path
       result[type][output].searchPaths = build.alternateSearchPaths;
