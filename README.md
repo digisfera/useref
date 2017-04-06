@@ -32,7 +32,7 @@ Blocks are expressed as:
 - **type**: either `js`, `css` or `remove`
 - **alternate search path**: (optional) By default the input files are relative to the treated file. Alternate search path allows one to change that
 - **path**: the file path of the optimized file, the target output
-- **parameters**: extra parameters that should be added to the tag
+- **parameters**: extra parameters that should be added to the tag. By default `rel="stylesheet"` attribute is added to css link tag, your can overwrite it by passing your own rel parameter, e.g. `rel="preload"`
 
 An example of this in completed form can be seen below:
 
