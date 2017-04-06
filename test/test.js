@@ -144,6 +144,12 @@ describe('html-ref-replace', function() {
     expect(result[1]).to.eql({ css: { '/css/combined.css': { 'assets': [ '/css/one.css', '/css/two.css' ] }}});
   });
 
+  it('should replace css blocks with rel', function() {
+    var result = useRef(fread(djoin('testfiles/15-rel.html')));
+    expect(result[0]).to.equal(fread(djoin('testfiles/15-rel-expected.html')));
+    expect(result[1]).to.eql({ css: { '/css/combined.css': { 'assets': [ '/css/one.css', '/css/two.css' ] }}});
+  });
+
   it('should reserve IE conditional comments', function() {
     var result = useRef(fread(djoin('testfiles/16.html')));
     expect(result[0]).to.equal(fread(djoin('testfiles/16-expected.html')));
