@@ -254,4 +254,23 @@ describe('html-ref-replace', function() {
       }
     });
   });
+
+  it('should parse and transform source and target path', function () {
+    var result = useRef(fread(djoin('testfiles/28.html')), {
+      parseSourcePath: function (tag) {
+        return (tag.match(/(src|href)\s*=\s*['"]\$\{url\('([^']+)'\)\}['"]/) || [])[2];
+      },
+      transformTargetPath: function(target) {
+        return '${url(\'' + target + '\')}';
+      }
+    });
+    expect(result[0]).to.equal(fread(djoin('testfiles/28-expected.html')));
+    expect(result[1]).to.eql({
+      js: {
+        '/js/combined.js': {
+          'assets': [ '/js/script1.js', '/js/script2.js' ],
+        },
+      }
+    });
+  });
 });
