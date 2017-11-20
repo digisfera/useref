@@ -173,7 +173,7 @@ Works with the [symfony2 assetic](http://symfony.com/doc/current/cookbook/asseti
 #### options.noconcat
 
 Type: `Boolean`  
-Default: `false`  
+Default: `false`
 
 Strips out build comments but leaves the rest of the block intact without replacing any tags.
 
@@ -190,6 +190,29 @@ Results in:
 <script type="text/javascript" src="scripts/this.js"></script>
 <script type="text/javascript" src="scripts/that.js"></script>
 ```
+
+#### options.parseSourcePath
+
+Type: `Function`
+Return: The path to the source file
+
+Function to parse the source path out of a script or style element.
+
+The function gets the following arguments:
+- *tag* (String): The html script or style tag
+- *type*: (String): The type e.g. `js`, `css`
+
+#### options.transformTargetPath
+
+Type: `Function`
+Return: The transformed path to the target file
+
+Function to transform the target file path.
+
+The function gets the following arguments:
+
+- *target* (String): The path to the target file
+- *type*: (String): The type e.g. `js`, `css`
 
 ## Contributing
 

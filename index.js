@@ -8,7 +8,7 @@ module.exports = function (content, options) {
   var blocks = getBlocks(content),
     opts = options || {},
     transformedContent = transformReferences(blocks, content, opts),
-    replaced = compactContent(blocks);
+    replaced = compactContent(blocks, opts);
 
   return [ transformedContent, replaced ];
 };
